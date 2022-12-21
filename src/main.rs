@@ -1,3 +1,4 @@
+mod sprites;
 mod unit;
 
 use bevy::prelude::{
@@ -6,12 +7,13 @@ use bevy::prelude::{
     TextureAtlasSprite, Time, Timer, TimerMode, Transform, Vec2, Vec3,
 };
 use bevy::DefaultPlugins;
+use sprites::{AnimationSpriteIndices, AnimationTimer};
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_startup_system(setup)
-        .add_system(animate_sprite)
+        .add_system(sprites::animate_sprite)
         .run();
 }
 
@@ -36,34 +38,4 @@ fn setup(
         AnimationSpriteIndices { start: 46, end: 47 },
         AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
     ));
-}
-
-#[derive(Component, Deref, DerefMut)]
-struct AnimationTimer(Timer);
-
-#[derive(Component)]
-struct AnimationSpriteIndices {
-    start: usize,
-    end: usize,
-}
-
-fn animate_sprite(
-    time: Res<Time>,
-    texture_atlases: Res<Assets<TextureAtlas>>,
-    mut query: Query<(
-        &mut AnimationTimer,
-        &AnimationSpriteIndices,
-        &mut TextureAtlasSprite,
-        &Handle<TextureAtlas>,
-    )>,
-) {
-    for (mut timer, sprite_indices, mut sprite, texture_atlas_handle) in &mut query {
-        timer.tick(time.delta());
-        if timer.just_finished() {
-            sprite.index += 1;
-            if sprite.index > sprite_indices.end {
-                sprite.index = sprite_indices.start;
-            }
-        }
-    }
 }
