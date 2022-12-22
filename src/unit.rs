@@ -1,14 +1,10 @@
-use bevy::prelude::{
-    Bundle, Component, Sprite, SpriteBundle, SpriteSheetBundle, TextureAtlasSprite,
-};
+use bevy::prelude::{Bundle, Component};
 
 #[derive(Bundle)]
 pub struct UnitBundle {
     unit: Unit,
     name: Name,
     stats: Stats,
-
-    sprite: TextureAtlasSprite,
 }
 
 #[derive(Component)]
